@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Proptype } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
     emits: ['start', 'pause', 'reset'],

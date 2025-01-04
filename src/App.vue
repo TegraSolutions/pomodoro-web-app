@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-    <TimerDisplay :timeLeft="timeLeft" />
+    <TimerDisplay :timeLeft="timeLeft" :isWorkTime="isWorkTime" />
     <TimerControls
       @start="startTimer"
       @pause="pauseTimer"
@@ -26,14 +26,21 @@ import SettingsModal from './components/SettingsModal.vue';
 export default defineComponent({
   components: { TimerDisplay, TimerControls, SettingsModal },
   setup() {
-    const timeLeft = ref(25 * 60); // Default 25 minutes
+    const workDuration = ref(25 * 60); // Default 25 minutes
+    const breakDuration = ref(5 * 60); // Default 5 minutes
+    const timeLeft = ref(workDuration.value);
     const timer = ref<ReturnType<typeof setInterval> | null>(null);
     const settingsOpen = ref(false);
+    const isWorkTime = ref(true);
 
     const startTimer = () => {
       if (!timer.value) {
         timer.value = setInterval(() => {
-          if (timeLeft.value > 0) timeLeft.value--;
+          if (timeLeft.value > 0) {
+            timeLeft.value--;
+          } else {
+            switchMode();
+          }
         }, 1000);
       }
     };
@@ -47,7 +54,12 @@ export default defineComponent({
 
     const resetTimer = () => {
       pauseTimer();
-      timeLeft.value = 25 * 60;
+      timeLeft.value = isWorkTime.value ? workDuration.value : breakDuration.value;
+    };
+
+    const switchMode = () => {
+      isWorkTime.value = !isWorkTime.value;
+      timeLeft.value = isWorkTime.value ? workDuration.value : breakDuration.value;
     };
 
     const toggleSettings = () => {
@@ -55,8 +67,9 @@ export default defineComponent({
     };
 
     const updateSettings = (settings: { workDuration: number; breakDuration: number }) => {
+      workDuration.value = settings.workDuration * 60;
+      breakDuration.value = settings.breakDuration * 60;
       resetTimer();
-      timeLeft.value = settings.workDuration * 60;
       toggleSettings();
     };
 
@@ -68,6 +81,7 @@ export default defineComponent({
       settingsOpen,
       toggleSettings,
       updateSettings,
+      isWorkTime,
     };
   },
 });
