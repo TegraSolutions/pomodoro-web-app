@@ -1,14 +1,22 @@
 <template>
-    <div class="text-center">
-      <h1 class="text-4xl font-bold">{{ formattedTime }}</h1>
-      <p class="text-lg">{{ isWorkTime ? 'Work Time' : 'Break Time' }}</p>
+  <div class="text-center flex flex-col items-center gap-8">
+    <div class="flex items-center gap-4">
+      <Button :variant="workButtonVariant" size="lg" class="text-lg font-medium cursor-default">Work</Button>
+      <Button :variant="breakButtonVariant" size="lg" class="text-lg font-medium cursor-default">Break</Button>
     </div>
-  </template>
+    <h1 class="scroll-m-20 text-8xl font-semibold tracking-tight lg:text-9xl text-background">
+      {{ formattedTime }}
+    </h1>
+  </div>
+</template>
   
   <script lang="ts">
-  import { defineComponent } from 'vue';
-  
+  import { defineComponent, computed } from 'vue';
+  import { Button } from '@/components/ui/button';
   export default defineComponent({
+    components: {
+      Button
+    },
     props: {
       timeLeft: {
         type: Number,
@@ -19,13 +27,22 @@
         required: true
       }
     },
-    computed: {
-      formattedTime(): string {
-        const minutes = Math.floor(this.timeLeft / 60);
-        const seconds = this.timeLeft % 60;
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-      }
-    }
+    setup(props) {
+    const workButtonVariant = computed(() => (props.isWorkTime ? 'secondary' : 'outline'));
+    const breakButtonVariant = computed(() => (props.isWorkTime ? 'outline' : 'default'));
+
+    const formattedTime = computed(() => {
+      const minutes = Math.floor(props.timeLeft / 60);
+      const seconds = props.timeLeft % 60;
+      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    });
+
+    return {
+      workButtonVariant,
+      breakButtonVariant,
+      formattedTime
+    };
+  }
   });
   </script>
   

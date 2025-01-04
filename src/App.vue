@@ -1,6 +1,7 @@
 <template>
   <div
-    class="min-h-screen flex flex-col items-center justify-center bg-gray-100"
+    class="min-h-screen flex flex-col items-center justify-center bg-cover bg-center gap-8"
+    style="background-image: url('https://studywithme.io/aesthetic-pomodoro-timer/9f1e88521119e2e349d8.jpg');"
   >
     <TimerDisplay :timeLeft="timeLeft" :isWorkTime="isWorkTime" />
     <div class="flex gap-4">
@@ -11,9 +12,8 @@
       />
       <button
         @click="toggleSettings"
-        class="bg-blue-500 text-white px-4 py-2 rounded"
       >
-        Settings
+        <FlFilledSettings class="w-12 h-12 text-background" />
       </button>
     </div>
     <SettingsModal
@@ -29,9 +29,10 @@ import { defineComponent, ref } from "vue";
 import TimerDisplay from "./components/TimerDisplay.vue";
 import TimerControls from "./components/TimerControls.vue";
 import SettingsModal from "./components/SettingsModal.vue";
+import { FlFilledSettings } from '@kalimahapps/vue-icons';
 
 export default defineComponent({
-  components: { TimerDisplay, TimerControls, SettingsModal },
+  components: { TimerDisplay, TimerControls, SettingsModal, FlFilledSettings },
   setup() {
     const workDuration = ref(25 * 60); // Default 25 minutes
     const breakDuration = ref(5 * 60); // Default 5 minutes
