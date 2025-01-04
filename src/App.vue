@@ -1,27 +1,34 @@
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center bg-gray-100"
+  >
     <TimerDisplay :timeLeft="timeLeft" :isWorkTime="isWorkTime" />
-    <TimerControls
-      @start="startTimer"
-      @pause="pauseTimer"
-      @reset="resetTimer"
-    />
+    <div class="flex gap-4">
+      <TimerControls
+        :isRunning="isRunning"
+        @toggle="toggleTimer"
+        @reset="resetTimer"
+      />
+      <button
+        @click="toggleSettings"
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Settings
+      </button>
+    </div>
     <SettingsModal
       :isOpen="settingsOpen"
       @close="toggleSettings"
       @save="updateSettings"
     />
-    <button @click="toggleSettings" class="mt-6 bg-blue-500 text-white px-4 py-2 rounded">
-      Settings
-    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import TimerDisplay from './components/TimerDisplay.vue';
-import TimerControls from './components/TimerControls.vue';
-import SettingsModal from './components/SettingsModal.vue';
+import { defineComponent, ref } from "vue";
+import TimerDisplay from "./components/TimerDisplay.vue";
+import TimerControls from "./components/TimerControls.vue";
+import SettingsModal from "./components/SettingsModal.vue";
 
 export default defineComponent({
   components: { TimerDisplay, TimerControls, SettingsModal },
@@ -32,6 +39,7 @@ export default defineComponent({
     const timer = ref<ReturnType<typeof setInterval> | null>(null);
     const settingsOpen = ref(false);
     const isWorkTime = ref(true);
+    const isRunning = ref(false);
 
     const startTimer = () => {
       if (!timer.value) {
@@ -42,6 +50,7 @@ export default defineComponent({
             switchMode();
           }
         }, 1000);
+        isRunning.value = true;
       }
     };
 
@@ -49,28 +58,44 @@ export default defineComponent({
       if (timer.value) {
         clearInterval(timer.value);
         timer.value = null;
+        isRunning.value = false;
       }
     };
 
     const resetTimer = () => {
       pauseTimer();
-      timeLeft.value = isWorkTime.value ? workDuration.value : breakDuration.value;
+      timeLeft.value = isWorkTime.value
+        ? workDuration.value
+        : breakDuration.value;
     };
 
     const switchMode = () => {
       isWorkTime.value = !isWorkTime.value;
-      timeLeft.value = isWorkTime.value ? workDuration.value : breakDuration.value;
+      timeLeft.value = isWorkTime.value
+        ? workDuration.value
+        : breakDuration.value;
     };
 
     const toggleSettings = () => {
       settingsOpen.value = !settingsOpen.value;
     };
 
-    const updateSettings = (settings: { workDuration: number; breakDuration: number }) => {
+    const updateSettings = (settings: {
+      workDuration: number;
+      breakDuration: number;
+    }) => {
       workDuration.value = settings.workDuration * 60;
       breakDuration.value = settings.breakDuration * 60;
       resetTimer();
       toggleSettings();
+    };
+
+    const toggleTimer = () => {
+      if (isRunning.value) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
     };
 
     return {
@@ -82,6 +107,8 @@ export default defineComponent({
       toggleSettings,
       updateSettings,
       isWorkTime,
+      isRunning,
+      toggleTimer,
     };
   },
 });
