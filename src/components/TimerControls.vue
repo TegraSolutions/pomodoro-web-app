@@ -11,7 +11,7 @@
   
   <script lang="ts">
   import { defineComponent, ref, computed } from 'vue';
-  import { Button } from '@/components/ui/button'
+  import { Button } from './ui/button'
   import { MdRefresh } from '@kalimahapps/vue-icons';
   export default defineComponent({
     components: {

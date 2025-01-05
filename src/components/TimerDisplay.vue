@@ -12,7 +12,7 @@
   
   <script lang="ts">
   import { defineComponent, computed } from 'vue';
-  import { Button } from '@/components/ui/button';
+  import { Button } from './ui/button';
   export default defineComponent({
     components: {
       Button
