@@ -10,6 +10,10 @@
         <label class="block mb-2">Break Duration (minutes):</label>
         <input v-model="breakDuration" type="number" class="border rounded p-2 w-full">
       </div>
+      <div class="mt-4">
+        <label class="block mb-2">Max Cycles:</label>
+        <input v-model="maxCycles" type="number" class="border rounded p-2 w-full">
+      </div>
       <div class="flex justify-end mt-6 gap-4">
         <button @click="saveSettings" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
         <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
@@ -30,6 +34,7 @@ export default defineComponent({
         return {
             workDuration: 25,
             breakDuration: 5,
+            maxCycles: 4,
         };
     },
     methods: {
@@ -40,6 +45,7 @@ export default defineComponent({
             this.$emit('save', {
                 workDuration: this.workDuration,
                 breakDuration: this.breakDuration,
+                maxCycles: this.maxCycles,
             });
         }
     }
