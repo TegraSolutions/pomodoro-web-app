@@ -1,31 +1,55 @@
 <template>
     <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-lg">
-      <h2 class="text-xl font-bold mb-4">Settings</h2>
-      <div>
-        <label class="block mb-2">Work Duration (minutes):</label>
-        <input v-model="workDuration" type="number" class="border rounded p-2 w-full">
-      </div>
-      <div class="mt-4">
-        <label class="block mb-2">Break Duration (minutes):</label>
-        <input v-model="breakDuration" type="number" class="border rounded p-2 w-full">
-      </div>
-      <div class="mt-4">
-        <label class="block mb-2">Max Cycles:</label>
-        <input v-model="maxCycles" type="number" class="border rounded p-2 w-full">
-      </div>
-      <div class="flex justify-end mt-6 gap-4">
-        <button @click="saveSettings" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
-        <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-      </div>
-    </div>
-  </div>
+        <Card class="p-0 w-96">
+            <CardHeader>
+                <CardTitle class="text-2xl">Settings</CardTitle>
+                <CardDescription>Change the duration of your work and break sessions.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div class="grid items-center w-full gap-4">
+                    <div class="flex flex-col space-y-1.5">
+                        <Label for="workDuration">Work Duration (minutes):</Label>
+                        <Input id="workDuration" placeholder="Name of your project" v-model="workDuration" type="number" />
+                    </div>
+                    <div class="flex flex-col space-y-1.5">
+                        <Label for="breakDuration">Break Duration (minutes):</Label>
+                        <Input id="breakDuration" placeholder="Name of your project" v-model="breakDuration" type="number" />
+                    </div>
+                    <div class="flex flex-col space-y-1.5">
+                        <Label for="maxCycles">Max Cycles:</Label>
+                        <Input id="maxCycles" placeholder="Name of your project" v-model="maxCycles" type="number" />
+                    </div>
+                </div>
+            </CardContent>
+            <CardFooter class="flex justify-between px-6 pb-6">
+                <Button variant="destructive" @click="closeModal">
+                    Cancel
+                </Button>
+                <Button @click="saveSettings" variant="ghost">Save</Button>
+            </CardFooter>
+        </Card>
+    </div>    
 </template>
 
 <script lang="ts">
 import { defineComponent }  from 'vue';
+import { Card,CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/card';
+import { Label } from './ui/label';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 
 export default defineComponent({
+    components: {
+        Card,
+        CardHeader,
+        CardTitle,
+        CardDescription,
+        CardContent,
+        CardFooter,
+        Label,
+        Input,
+        Button,
+    },
     props: {
         isOpen: Boolean,
     },
