@@ -10,9 +10,7 @@
         @toggle="toggleTimer"
         @reset="resetTimer"
       />
-      <button
-        @click="toggleSettings"
-      >
+      <button @click="toggleSettings">
         <FlFilledSettings class="w-12 h-12 text-background" />
       </button>
     </div>
@@ -24,6 +22,11 @@
     <div class="text-center mt-4">
       <p class="text-lg font-semibold text-background">Total Time Elapsed: {{ elapsedTime }}</p>
     </div>
+    <CompletionModal
+      :isOpen="completionModalOpen"
+      :elapsedTime="elapsedTime"
+      @close="closeCompletionModal"
+    />
   </div>
 </template>
 
@@ -32,10 +35,11 @@ import { defineComponent, ref, computed, watch } from "vue";
 import TimerDisplay from "./components/TimerDisplay.vue";
 import TimerControls from "./components/TimerControls.vue";
 import SettingsModal from "./components/SettingsModal.vue";
+import CompletionModal from "./components/CompletionModal.vue";
 import { FlFilledSettings } from '@kalimahapps/vue-icons';
 
 export default defineComponent({
-  components: { TimerDisplay, TimerControls, SettingsModal, FlFilledSettings },
+  components: { TimerDisplay, TimerControls, SettingsModal, CompletionModal, FlFilledSettings },
   setup() {
     const workDuration = ref(25 * 60); // Default 25 minutes
     const breakDuration = ref(5 * 60); // Default 5 minutes
@@ -51,6 +55,7 @@ export default defineComponent({
     const cycleCount = ref(0);
     const maxCycles = ref(5);
     const totalTimeElapsed = ref(0); // Counter for total time elapsed
+    const completionModalOpen = ref(false); // State for completion modal
 
     const startTimer = () => {
       if (!timer.value) {
@@ -100,7 +105,7 @@ export default defineComponent({
       } else {
         pauseTimer();
         endBell.play();
-        resetTimer(); // Reset the timer to initial values
+        completionModalOpen.value = true; // Show completion modal
       }
     };
 
@@ -126,6 +131,11 @@ export default defineComponent({
       } else {
         startTimer();
       }
+    };
+
+    const closeCompletionModal = () => {
+      completionModalOpen.value = false;
+      resetTimer(); // Reset the timer when the modal is closed
     };
 
     const elapsedTime = computed(() => {
@@ -154,6 +164,8 @@ export default defineComponent({
       cycleCount,
       maxCycles,
       elapsedTime,
+      completionModalOpen,
+      closeCompletionModal,
     };
   },
 });
